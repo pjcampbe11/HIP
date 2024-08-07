@@ -2,6 +2,37 @@
 
 HIP.py is a versatile script that provides various text manipulation, encryption, and document processing functionalities, inspired by CyberChef. The script allows users to encode, decode, encrypt, and manipulate text using numerous algorithms and techniques, as well as handle document creation and email sending tasks.
 
+```
+python3.9 hip.py --help all
+usage: hip.py [-h] [--lulz] [--help_all]
+              {encode,decode,inject,inject_prompts,reveal_hidden_text,convert_tags,utf,case,reverse,decimal,hexadecimal,inject_hidden_prompt,prompt_injection}
+              ...
+
+Hide Injected Prompts (HIP)
+
+positional arguments:
+  {encode,decode,inject,inject_prompts,reveal_hidden_text,convert_tags,utf,case,reverse,decimal,hexadecimal,inject_hidden_prompt,prompt_injection}
+                        Sub-command help
+    encode              Encode ASCII Art
+    decode              Decode ASCII Art
+    inject              Inject hidden text
+    inject_prompts      Inject hidden text with prompts
+    reveal_hidden_text  Reveal hidden text
+    convert_tags        Convert HTML/XML tags
+    utf                 UTF-16/UTF-8 Encode/Decode
+    case                Convert to Upper/Lower Case
+    reverse             Reverse Text
+    decimal             Convert to/From Decimal
+    hexadecimal         Convert to/From Hexadecimal
+    inject_hidden_prompt
+                        Inject hidden prompt into document
+    prompt_injection    Apply prompt injection techniques to text
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --lulz                Prints a fun message
+  --help_all            Show all command options available
+```
 ## Table of Contents
 1. [Installation](#installation)
 2. [Usage](#usage)
