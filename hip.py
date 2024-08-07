@@ -701,7 +701,43 @@ def main():
     prompt_injection_parser.add_argument('--examples', nargs='*', help='Examples for few-shot prompting')
     prompt_injection_parser.add_argument('--intermediate_prompts', nargs='*', help='Intermediate prompts for prompt chaining')
     prompt_injection_parser.add_argument('--output', '-o', type=str, help='Output file')
-    
+    function_parser = subparsers.add_parser('function', help='Select a function to run')
+    function_parser.add_argument('function', choices=[
+    'aes_encrypt', 'aes_decrypt', 'base64_encode', 'base64_decode', 'base32_encode', 'base32_decode',
+    'base85_encode', 'base85_decode', 'xor_encrypt', 'xor_decrypt', 'rot13', 'url_encode', 'url_decode',
+    'html_entity_encode', 'html_entity_decode', 'morse_code_encode', 'morse_code_decode', 'gzip_compress',
+    'gzip_decompress', 'zlib_compress', 'zlib_decompress', 'bzip2_compress', 'bzip2_decompress', 'hex_dump',
+    'from_hex_dump', 'base64_to_hex', 'hex_to_base64', 'to_binary', 'from_binary', 'utf16_encode', 'utf16_decode',
+    'utf8_encode', 'utf8_decode', 'to_upper_case', 'to_lower_case', 'reverse_text', 'to_decimal', 'from_decimal',
+    'to_hexadecimal', 'from_hexadecimal', 'to_octal', 'from_octal', 'find_replace', 'split', 'join', 'length',
+    'truncate', 'pad', 'extract_regex', 'escape', 'unescape', 'md5', 'sha1', 'sha256', 'sha512', 'crc32',
+    'timestamp_convert', 'uuid_generate', 'uuid_validate', 'random_number', 'math_operations', 'format_json',
+    'parse_json', 'format_xml', 'parse_xml'
+    ], help='Function to run')
+
+    function_parser.add_argument('--text', '-t', type=str, help='Text input for the function')
+    function_parser.add_argument('--password', '-p', type=str, help='Password for encryption/decryption functions')
+    function_parser.add_argument('--key', '-k', type=str, help='Key for XOR encryption/decryption functions')
+    function_parser.add_argument('--start', type=int, help='Start range for random number generation')
+    function_parser.add_argument('--end', type=int, help='End range for random number generation')
+    function_parser.add_argument('--mode', choices=['to', 'from'], help='Mode for timestamp conversion')
+    function_parser.add_argument('--expression', '-e', type=str, help='Expression for math operations')
+    function_parser.add_argument('--find', '-f', type=str, help='Text to find')
+    function_parser.add_argument('--replace', '-r', type=str, help='Text to replace with')
+    function_parser.add_argument('--delimiter', '-d', type=str, help='Delimiter for split/join functions')
+    function_parser.add_argument('--length', '-l', type=int, help='Length for truncate/pad functions')
+    function_parser.add_argument('--char', '-c', type=str, help='Padding character')
+    function_parser.add_argument('--pattern', type=str, help='Regex pattern for extract_regex function')
+    function_parser.add_argument('--filename', '-fn', type=str, help='Filename for document creation functions')
+    function_parser.add_argument('--title', '-ti', type=str, default='Title', help='Title for HTML document')
+    function_parser.add_argument('--body', '-b', type=str, default='Body', help='Body content for HTML document')
+
+    prompt_injection_parser = subparsers.add_parser('prompt_injection', help='Apply prompt injection techniques to text')
+    prompt_injection_parser.add_argument('input', type=str, nargs='?', default='', help='Input text or file')
+    prompt_injection_parser.add_argument('--techniques', nargs='+', choices=['few_shot', 'chain_of_thought', 'self_consistency', 'prompt_chaining', 'tree_of_thoughts'], required=True, help='Techniques to apply')
+    prompt_injection_parser.add_argument('--examples', nargs='*', help='Examples for few-shot prompting')
+    prompt_injection_parser.add_argument('--intermediate_prompts', nargs='*', help='Intermediate prompts for prompt chaining')
+    prompt_injection_parser.add_argument('--output', '-o', type=str, help='Output file')
     parser.add_argument('--help_all', action='store_true', help='Show all command options available')
 
     args = parser.parse_args()
