@@ -695,12 +695,6 @@ def main():
     create_parser.add_argument('--filename', '-f', type=str, default=None, help='Filename for the document')
     create_parser.add_argument('--title', '-t', type=str, default='Title', help='Title for HTML document')
     create_parser.add_argument('--body', '-b', type=str, default='Body', help='Body content for HTML document')
-    prompt_injection_parser = subparsers.add_parser('prompt_injection', help='Apply prompt injection techniques to text')
-    prompt_injection_parser.add_argument('input', type=str, nargs='?', default='', help='Input text or file')
-    prompt_injection_parser.add_argument('--techniques', nargs='+', choices=['few_shot', 'chain_of_thought', 'self_consistency', 'prompt_chaining', 'tree_of_thoughts'], required=True, help='Techniques to apply')
-    prompt_injection_parser.add_argument('--examples', nargs='*', help='Examples for few-shot prompting')
-    prompt_injection_parser.add_argument('--intermediate_prompts', nargs='*', help='Intermediate prompts for prompt chaining')
-    prompt_injection_parser.add_argument('--output', '-o', type=str, help='Output file')
     function_parser = subparsers.add_parser('function', help='Select a function to run')
     function_parser.add_argument('function', choices=[
     'aes_encrypt', 'aes_decrypt', 'base64_encode', 'base64_decode', 'base32_encode', 'base32_decode',
