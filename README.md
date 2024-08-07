@@ -512,83 +512,106 @@ Decode a link:
 ```
 python3.9 hip.py --decode-link "encoded_link"
 ```
-Detailed Explanation
+# Detailed Explanation
+
 The HIP script is designed to provide a wide range of functionalities through a command-line interface. Each command is associated with a specific operation, allowing users to perform complex text processing, encryption, encoding, and other tasks with ease. The script leverages various Python libraries to implement these functionalities, ensuring high performance and reliability.
 
-When to Use Each Function
-Hidden Prompt Injection: Use this feature to inject hidden prompts into documents for testing or other purposes.
-Text Processing: Useful for encoding messages in ASCII art, generating text embeddings, and converting tags.
-Encryptions/Encodings: Use these functions for secure text encryption, encoding, and decoding.
-Compression/Decompression: Compress or decompress text data for efficient storage or transmission.
-Data Formats: Convert text to different formats for compatibility with various applications.
-Conversion: Change text case, reverse text, or convert text to different numeric bases.
-String Operations: Perform find/replace, split/join operations, and other string manipulations.
-Hashing: Generate hashes for data integrity verification.
-Miscellaneous: Perform timestamp conversions, generate/validate UUIDs, generate random numbers, perform math operations, and format/parse JSON/XML data.
-Code Explanation
-The hip.py script is organized into various sections, each providing specific functionalities. Here is a detailed explanation of the script:
+## When to Use Each Function
 
-Imports
+- **Hidden Prompt Injection**: Use this feature to inject hidden prompts into documents for testing or other purposes.
+- **Text Processing**: Useful for encoding messages in ASCII art, generating text embeddings, and converting tags.
+- **Encryptions/Encodings**: Use these functions for secure text encryption, encoding, and decoding.
+- **Compression/Decompression**: Compress or decompress text data for efficient storage or transmission.
+- **Data Formats**: Convert text to different formats for compatibility with various applications.
+- **Conversion**: Change text case, reverse text, or convert text to different numeric bases.
+- **String Operations**: Perform find/replace, split/join operations, and other string manipulations.
+- **Hashing**: Generate hashes for data integrity verification.
+- **Miscellaneous**: Perform timestamp conversions, generate/validate UUIDs, generate random numbers, perform math operations, and format/parse JSON/XML data.
+
+## Code Explanation
+
+The `hip.py` script is organized into various sections, each providing specific functionalities. Here is a detailed explanation of the script:
+
+### Imports
+
 The script begins with importing necessary libraries:
 
-argparse for parsing command-line arguments.
-base64, re, zipfile, os, pyperclip, datetime, uuid, random, json, hashlib, binascii, gzip, zlib, bz2, urllib.parse, html for various operations.
-Crypto.Cipher and Crypto.Random for AES encryption.
-Encryption/Encoding Functions
+- `argparse` for parsing command-line arguments.
+- `base64`, `re`, `zipfile`, `os`, `pyperclip`, `datetime`, `uuid`, `random`, `json`, `hashlib`, `binascii`, `gzip`, `zlib`, `bz2`, `urllib.parse`, `html` for various operations.
+- `Crypto.Cipher` and `Crypto.Random` for AES encryption.
+
+### Encryption/Encoding Functions
+
 These functions handle encryption and encoding operations:
 
-AES Encryption/Decryption: Uses a password to encrypt/decrypt text using AES-GCM.
-Base64, Base32, Base85 Encode/Decode: Encodes/decodes text in various base formats.
-XOR Encryption: Encrypts text using XOR with a key.
-ROT13: Applies ROT13 encoding to text.
-URL Encode/Decode: Encodes/decodes text for safe URL transmission.
-HTML Entity Encode/Decode: Encodes/decodes text as HTML entities.
-Morse Code Encode/Decode: Encodes/decodes text in Morse code.
-Compression/Decompression Functions
+- **AES Encryption/Decryption**: Uses a password to encrypt/decrypt text using AES-GCM.
+- **Base64, Base32, Base85 Encode/Decode**: Encodes/decodes text in various base formats.
+- **XOR Encryption**: Encrypts text using XOR with a key.
+- **ROT13**: Applies ROT13 encoding to text.
+- **URL Encode/Decode**: Encodes/decodes text for safe URL transmission.
+- **HTML Entity Encode/Decode**: Encodes/decodes text as HTML entities.
+- **Morse Code Encode/Decode**: Encodes/decodes text in Morse code.
+
+### Compression/Decompression Functions
+
 These functions handle text compression and decompression:
 
-Gzip, Zlib, Bzip2 Compress/Decompress: Compresses/decompresses text using different algorithms.
-Data Formats Functions
+- **Gzip, Zlib, Bzip2 Compress/Decompress**: Compresses/decompresses text using different algorithms.
+
+### Data Formats Functions
+
 These functions convert text between different formats:
 
-Hex Dump/From Hex Dump: Converts text to/from hexadecimal representation.
-Base64 to Hex/Hex to Base64: Converts text between Base64 and hexadecimal formats.
-Binary to Hex/Hex to Binary: Converts text between binary and hexadecimal formats.
-UTF-16, UTF-8 Encode/Decode: Encodes/decodes text in UTF-16 and UTF-8.
-Conversion Functions
+- **Hex Dump/From Hex Dump**: Converts text to/from hexadecimal representation.
+- **Base64 to Hex/Hex to Base64**: Converts text between Base64 and hexadecimal formats.
+- **Binary to Hex/Hex to Binary**: Converts text between binary and hexadecimal formats.
+- **UTF-16, UTF-8 Encode/Decode**: Encodes/decodes text in UTF-16 and UTF-8.
+
+### Conversion Functions
+
 These functions perform various text conversions:
 
-Case Conversion: Converts text to upper/lower case.
-Reverse Text: Reverses the order of characters in text.
-Decimal, Hexadecimal, Octal Conversion: Converts text to/from different numeric bases.
-String Operations Functions
+- **Case Conversion**: Converts text to upper/lower case.
+- **Reverse Text**: Reverses the order of characters in text.
+- **Decimal, Hexadecimal, Octal Conversion**: Converts text to/from different numeric bases.
+
+### String Operations Functions
+
 These functions perform operations on strings:
 
-Find/Replace: Finds and replaces text.
-Split/Join: Splits text into a list or joins a list into text.
-Length: Calculates the length of text.
-Truncate: Truncates text to a specified length.
-Pad: Pads text to a specified length with a character.
-Extract Regex: Extracts text matching a regular expression.
-Escape/Unescape: Escapes/unescapes special characters.
-Hashing Functions
+- **Find/Replace**: Finds and replaces text.
+- **Split/Join**: Splits text into a list or joins a list into text.
+- **Length**: Calculates the length of text.
+- **Truncate**: Truncates text to a specified length.
+- **Pad**: Pads text to a specified length with a character.
+- **Extract Regex**: Extracts text matching a regular expression.
+- **Escape/Unescape**: Escapes/unescapes special characters.
+
+### Hashing Functions
+
 These functions generate hashes of text:
 
-MD5, SHA-1, SHA-256, SHA-512: Generates different types of hashes.
-CRC32: Generates a CRC32 checksum.
-Miscellaneous Functions
+- **MD5, SHA-1, SHA-256, SHA-512**: Generates different types of hashes.
+- **CRC32**: Generates a CRC32 checksum.
+
+### Miscellaneous Functions
+
 These functions provide various utilities:
 
-Timestamp Convert: Converts text to/from a timestamp.
-UUID Generate/Validate: Generates/validates UUIDs.
-Random Number Generation: Generates a random number in a range.
-Math Operations: Evaluates mathematical expressions.
-JSON/XML Format/Parse: Formats/parses JSON and XML data.
-Main Function
+- **Timestamp Convert**: Converts text to/from a timestamp.
+- **UUID Generate/Validate**: Generates/validates UUIDs.
+- **Random Number Generation**: Generates a random number in a range.
+- **Math Operations**: Evaluates mathematical expressions.
+- **JSON/XML Format/Parse**: Formats/parses JSON and XML data.
+
+### Main Function
+
 The main function sets up argument parsing and handles the different commands and options. Each command is associated with a specific operation, and the function calls the appropriate utility functions based on the command-line arguments.
 
-Conclusion
+## Conclusion
+
 HIP is a powerful and versatile tool for text processing, encryption, encoding, and more. Its comprehensive set of features and flexible command-line interface make it suitable for a wide range of tasks. Whether you need to inject hidden prompts into documents, perform complex text manipulations, or secure your data with encryption, HIP has you covered.
 
-License
+## License
+
 This project is licensed under the MIT License. See the LICENSE file for details.
