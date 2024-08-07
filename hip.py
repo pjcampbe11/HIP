@@ -739,7 +739,13 @@ def main():
     prompt_injection_parser.add_argument('--intermediate_prompts', nargs='*', help='Intermediate prompts for prompt chaining')
     prompt_injection_parser.add_argument('--output', '-o', type=str, help='Output file')
     parser.add_argument('--help_all', action='store_true', help='Show all command options available')
-
+    send_email_parser = subparsers.add_parser('send_email', help='Send an email with optional attachment')
+    send_email_parser.add_argument('--sender', '-s', type=str, required=True, help='Sender email address')
+    send_email_parser.add_argument('--recipient', '-r', type=str, required=True, help='Recipient email address')
+    send_email_parser.add_argument('--subject', '-sub', type=str, required=True, help='Email subject')
+    send_email_parser.add_argument('--body', '-b', type=str, required=True, help='Email body')
+    send_email_parser.add_argument('--smtp_server', '-smtp', type=str, required=True, help='SMTP server address')
+    send_email_parser.add_argument('--attachment_path', '-a', type=str, help='Path to attachment file')
     args = parser.parse_args()
 
     if args.help_all:
