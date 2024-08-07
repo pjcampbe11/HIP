@@ -199,7 +199,7 @@ python3.9 hip.py --morse-encode "Your message"
 Decode a Morse code message:
 ```
 python3.9 hip.py --morse-decode "Morse code message"
-
+```
 Compression/Decompression Functions
 
 GZIP Compression
@@ -211,7 +211,7 @@ python3.9 hip.py --gzip-compress "Your message"
 Decompress a GZIP compressed message:
 ```
 python3.9 hip.py --gzip-decompress "GZIP compressed message"
-
+```
 ZLIB Compression
 
 Compress a message with ZLIB:
@@ -232,7 +232,7 @@ python3.9 hip.py --bzip2-compress "Your message"
 Decompress a BZIP2 compressed message:
 ```
 python3.9 hip.py --bzip2-decompress "BZIP2 compressed message"
-
+```
 Data Formats Functions
 
 Hex Dump
