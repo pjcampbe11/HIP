@@ -29,38 +29,44 @@
 HIP.py is a versatile script that provides various text manipulation, encryption, and document processing functionalities, inspired by CyberChef. The script allows users to encode, decode, encrypt, and manipulate text using numerous algorithms and techniques, as well as handle document creation and email sending tasks.
 
 ```
-python3.9 hip.py --help all
-usage: hip.py [-h] [--lulz] [--help_all]
-              {encode,decode,inject,inject_prompts,reveal_hidden_text,convert_tags,utf,case,reverse,decimal,hexadecimal,inject_hidden_prompt,prompt_injection}
-              ...
-
-Hide Injected Prompts (HIP)
+python3.9 hip.py function --help all
+usage: hip.py function [-h] [--text TEXT] [--password PASSWORD] [--key KEY]
+                       [--start START] [--end END] [--mode {to,from}]
+                       [--expression EXPRESSION] [--find FIND]
+                       [--replace REPLACE] [--delimiter DELIMITER]
+                       [--length LENGTH] [--char CHAR] [--pattern PATTERN]
+                       [--filename FILENAME] [--title TITLE] [--body BODY]
+                       {aes_encrypt,aes_decrypt,base64_encode,base64_decode,base32_encode,base32_decode,base85_encode,base85_decode,xor_encrypt,xor_decrypt,rot13,url_encode,url_decode,html_entity_encode,html_entity_decode,morse_code_encode,morse_code_decode,gzip_compress,gzip_decompress,zlib_compress,zlib_decompress,bzip2_compress,bzip2_decompress,hex_dump,from_hex_dump,base64_to_hex,hex_to_base64,to_binary,from_binary,utf16_encode,utf16_decode,utf8_encode,utf8_decode,to_upper_case,to_lower_case,reverse_text,to_decimal,from_decimal,to_hexadecimal,from_hexadecimal,to_octal,from_octal,find_replace,split,join,length,truncate,pad,extract_regex,escape,unescape,md5,sha1,sha256,sha512,crc32,timestamp_convert,uuid_generate,uuid_validate,random_number,math_operations,format_json,parse_json,format_xml,parse_xml}
 
 positional arguments:
-  {encode,decode,inject,inject_prompts,reveal_hidden_text,convert_tags,utf,case,reverse,decimal,hexadecimal,inject_hidden_prompt,prompt_injection}
-                        Sub-command help
-    encode              Encode ASCII Art
-    decode              Decode ASCII Art
-    inject              Inject hidden text
-    inject_prompts      Inject hidden text with prompts
-    reveal_hidden_text  Reveal hidden text
-    convert_tags        Convert HTML/XML tags
-    utf                 UTF-16/UTF-8 Encode/Decode
-    case                Convert to Upper/Lower Case
-    reverse             Reverse Text
-    decimal             Convert to/From Decimal
-    hexadecimal         Convert to/From Hexadecimal
-    inject_hidden_prompt
-                        Inject hidden prompt into document
-    prompt_injection    Apply prompt injection techniques to text
+  {aes_encrypt,aes_decrypt,base64_encode,base64_decode,base32_encode,base32_decode,base85_encode,base85_decode,xor_encrypt,xor_decrypt,rot13,url_encode,url_decode,html_entity_encode,html_entity_decode,morse_code_encode,morse_code_decode,gzip_compress,gzip_decompress,zlib_compress,zlib_decompress,bzip2_compress,bzip2_decompress,hex_dump,from_hex_dump,base64_to_hex,hex_to_base64,to_binary,from_binary,utf16_encode,utf16_decode,utf8_encode,utf8_decode,to_upper_case,to_lower_case,reverse_text,to_decimal,from_decimal,to_hexadecimal,from_hexadecimal,to_octal,from_octal,find_replace,split,join,length,truncate,pad,extract_regex,escape,unescape,md5,sha1,sha256,sha512,crc32,timestamp_convert,uuid_generate,uuid_validate,random_number,math_operations,format_json,parse_json,format_xml,parse_xml}
+                        Function to run
 
 optional arguments:
   -h, --help            show this help message and exit
-  --lulz                Prints a fun message
-  --help_all            Show all command options available
-
-//Quickly see some examples
-cat README.md| grep -i 'python' -B2 -A2
+  --text TEXT, -t TEXT  Text input for the function
+  --password PASSWORD, -p PASSWORD
+                        Password for encryption/decryption functions
+  --key KEY, -k KEY     Key for XOR encryption/decryption functions
+  --start START         Start range for random number generation
+  --end END             End range for random number generation
+  --mode {to,from}      Mode for timestamp conversion
+  --expression EXPRESSION, -e EXPRESSION
+                        Expression for math operations
+  --find FIND, -f FIND  Text to find
+  --replace REPLACE, -r REPLACE
+                        Text to replace with
+  --delimiter DELIMITER, -d DELIMITER
+                        Delimiter for split/join functions
+  --length LENGTH, -l LENGTH
+                        Length for truncate/pad functions
+  --char CHAR, -c CHAR  Padding character
+  --pattern PATTERN     Regex pattern for extract_regex function
+  --filename FILENAME, -fn FILENAME
+                        Filename for document creation functions
+  --title TITLE, -ti TITLE
+                        Title for HTML document
+  --body BODY, -b BODY  Body content for HTML document
 ```
 ## Table of Contents
 1. [Installation](#installation)
