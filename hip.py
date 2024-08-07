@@ -147,6 +147,7 @@ def utf8_encode(text):
 
 def utf8_decode(text):
     return text.encode('latin1').decode('utf-8')
+
 # Conversion Functions
 def to_upper_case(text):
     return text.upper()
@@ -265,15 +266,16 @@ def parse_xml(text):
         return ET.fromstring(text)
     except Exception as e:
         return str(e)
-    # Document Creation Functions
-def create_word_document(filename):
+
+# Document Creation Functions
+def create_word_document(filename='document.docx'):
     doc = Document()
     doc.add_heading('Document Title', 0)
     doc.add_paragraph('This is a paragraph in the document.')
     doc.save(filename)
     print(f'Word document {filename} created.')
 
-def create_excel_spreadsheet(filename):
+def create_excel_spreadsheet(filename='spreadsheet.xlsx'):
     wb = Workbook()
     ws = wb.active
     ws.title = 'Sheet1'
@@ -282,9 +284,9 @@ def create_excel_spreadsheet(filename):
     wb.save(filename)
     print(f'Excel spreadsheet {filename} created.')
 
-def create_powerpoint_presentation(filename):
+def create_powerpoint_presentation(filename='presentation.pptx'):
     prs = Presentation()
-    slide_layout = prs
+    slide_layout = prs.slide_layouts[0]
     slide = prs.slides.add_slide(slide_layout)
     title = slide.shapes.title
     subtitle = slide.placeholders[1]
@@ -293,19 +295,19 @@ def create_powerpoint_presentation(filename):
     prs.save(filename)
     print(f'PowerPoint presentation {filename} created.')
 
-def create_onenote_document(filename):
+def create_onenote_document(filename='onenote.txt'):
     with open(filename, 'w') as f:
         f.write('This is a OneNote document placeholder.')
     print(f'OneNote document {filename} created.')
 
-def create_html_document(filename, title, body):
-    content = f'<!DOCTYPE html><html><head><meta hxxp-equiv="X-UA-Compatible" content="IE=8"><title>{title}</title></head><body>{body}</body></html>'
+def create_html_document(filename='index.html', title='Title', body='Body'):
+    content = f'<!DOCTYPE html><html><head><meta http-equiv="X-UA-Compatible" content="IE=8"><title>{title}</title></head><body>{body}</body></html>'
     with open(filename, 'w') as file:
         file.write(content)
     print(f'HTML document {filename} created.')
 
 # Inject Hidden Prompts Function
-def inject_hidden_prompt(doc_path, doc_type, location, payload, is_file):
+def inject_hidden_prompt(doc_path, doc_type, location, payload, is_file=False):
     file_paths = {
         'word': {
             'rels': '_rels/.rels',
@@ -392,24 +394,24 @@ def inject_hidden_prompt(doc_path, doc_type, location, payload, is_file):
 
 # Define prompt injection techniques
 def few_shot_prompting(input_text, examples):
-    prompt = "\\n".join([f"Example {i+1}:\\n{example}" for i, example in enumerate(examples)])
-    prompt += f"\\n\\nInput:\\n{input_text}\\n\\nOutput:"
+    prompt = "\n".join([f"Example {i+1}:\n{example}" for i, example in enumerate(examples)])
+    prompt += f"\n\nInput:\n{input_text}\n\nOutput:"
     return prompt[:1999]
 
 def chain_of_thought_prompting(input_text):
-    return f"Question: {input_text}\\n\\nLet's think step by step."
+    return f"Question: {input_text}\n\nLet's think step by step."
 
 def self_consistency(input_text):
-    return f"Question: {input_text}\\n\\nLet's generate multiple solutions and find the most consistent one."
+    return f"Question: {input_text}\n\nLet's generate multiple solutions and find the most consistent one."
 
 def prompt_chaining(input_text, intermediate_prompts):
     chained_prompt = input_text
     for prompt in intermediate_prompts:
-        chained_prompt = f"{chained_prompt}\\n\\nNext:\\n{prompt}"
+        chained_prompt = f"{chained_prompt}\n\nNext:\n{prompt}"
     return chained_prompt[:1999]
 
 def tree_of_thoughts(input_text):
-    return f"Question: {input_text}\\n\\nLet's explore multiple reasoning paths and evaluate them."
+    return f"Question: {input_text}\n\nLet's explore multiple reasoning paths and evaluate them."
 
 def apply_prompt_injections(input_text, techniques, examples=None, intermediate_prompts=None):
     results = []
@@ -423,7 +425,7 @@ def apply_prompt_injections(input_text, techniques, examples=None, intermediate_
         results.append(prompt_chaining(input_text, intermediate_prompts))
     if "tree_of_thoughts" in techniques:
         results.append(tree_of_thoughts(input_text))
-    return "\\n\\n".join(results)[:1999]
+    return "\n\n".join(results)[:1999]
 
 # Email Functions
 def encode_binary_to_base64(input_file_path, output_file_path=None):
@@ -625,7 +627,7 @@ remote_prompts = [
 
 def print_remote_prompts():
     for idx, prompt in enumerate(remote_prompts, 1):
-        print(f"{idx}. Prompt: {prompt['Prompt']}\\n    * Hidden code snippet: {prompt['Hidden code snippet']}")
+        print(f"{idx}. Prompt: {prompt['Prompt']}\n    * Hidden code snippet: {prompt['Hidden code snippet']}")
 
 def main():
     parser = argparse.ArgumentParser(description='Hide Injected Prompts (HIP)')
@@ -633,69 +635,73 @@ def main():
     subparsers = parser.add_subparsers(dest='command', help='Sub-command help')
 
     encode_parser = subparsers.add_parser('encode', help='Encode ASCII Art')
-    encode_parser.add_argument('input', type=str, help='Input ASCII art')
+    encode_parser.add_argument('input', type=str, nargs='?', default='', help='Input ASCII art')
     encode_parser.add_argument('--output', '-o', type=str, help='Output file for the encoded ASCII art')
 
     decode_parser = subparsers.add_parser('decode', help='Decode ASCII Art')
-    decode_parser.add_argument('input', type=str, help='Input encoded ASCII art')
+    decode_parser.add_argument('input', type=str, nargs='?', default='', help='Input encoded ASCII art')
     decode_parser.add_argument('--output', '-o', type=str, help='Output file for the decoded ASCII art')
 
     inject_parser = subparsers.add_parser('inject', help='Inject hidden text')
-    inject_parser.add_argument('input', type=str, help='Input text')
-    inject_parser.add_argument('hidden_text', type=str, help='Hidden text to inject')
+    inject_parser.add_argument('input', type=str, nargs='?', default='', help='Input text')
+    inject_parser.add_argument('hidden_text', type=str, nargs='?', default='', help='Hidden text to inject')
     inject_parser.add_argument('--output', '-o', type=str, help='Output file')
 
     inject_prompts_parser = subparsers.add_parser('inject_prompts', help='Inject hidden text with prompts')
-    inject_prompts_parser.add_argument('input', type=str, help='Input text')
-    inject_prompts_parser.add_argument('hidden_text', type=str, help='Hidden text to inject')
+    inject_prompts_parser.add_argument('input', type=str, nargs='?', default='', help='Input text')
+    inject_prompts_parser.add_argument('hidden_text', type=str, nargs='?', default='', help='Hidden text to inject')
     inject_prompts_parser.add_argument('--output', '-o', type=str, help='Output file')
 
     reveal_parser = subparsers.add_parser('reveal_hidden_text', help='Reveal hidden text')
-    reveal_parser.add_argument('input', type=str, help='Input text with hidden text')
+    reveal_parser.add_argument('input', type=str, nargs='?', default='', help='Input text with hidden text')
     reveal_parser.add_argument('--output', '-o', type=str, help='Output file')
 
     convert_tags_parser = subparsers.add_parser('convert_tags', help='Convert HTML/XML tags')
-    convert_tags_parser.add_argument('input', type=str, help='Input text with tags')
+    convert_tags_parser.add_argument('input', type=str, nargs='?', default='', help='Input text with tags')
     convert_tags_parser.add_argument('--output', '-o', type=str, help='Output file')
 
     df_parser = subparsers.add_parser('utf', help='UTF-16/UTF-8 Encode/Decode')
     df_parser.add_argument('action', choices=['utf16_encode', 'utf16_decode', 'utf8_encode', 'utf8_decode'], help='Action to perform')
-    df_parser.add_argument('text', type=str, help='Text to process')
+    df_parser.add_argument('text', type=str, nargs='?', default='', help='Text to process')
 
     conv_parser = subparsers.add_parser('case', help='Convert to Upper/Lower Case')
     conv_parser.add_argument('action', choices=['upper', 'lower'], help='Action to perform')
-    conv_parser.add_argument('text', type=str, help='Text to process')
+    conv_parser.add_argument('text', type=str, nargs='?', default='', help='Text to process')
 
     conv_parser = subparsers.add_parser('reverse', help='Reverse Text')
-    conv_parser.add_argument('text', type=str, help='Text to process')
+    conv_parser.add_argument('text', type=str, nargs='?', default='', help='Text to process')
 
     conv_parser = subparsers.add_parser('decimal', help='Convert to/From Decimal')
     conv_parser.add_argument('action', choices=['to', 'from'], help='Action to perform')
-    conv_parser.add_argument('text', type=str, help='Text to process')
+    conv_parser.add_argument('text', type=str, nargs='?', default='', help='Text to process')
 
     conv_parser = subparsers.add_parser('hexadecimal', help='Convert to/From Hexadecimal')
     conv_parser.add_argument('action', choices=['to', 'from'], help='Action to perform')
-    conv_parser.add_argument('text', type=str, help='Text to process')
+    conv_parser.add_argument('text', type=str, nargs='?', default='', help='Text to process')
 
     inject_hidden_prompt_parser = subparsers.add_parser('inject_hidden_prompt', help='Inject hidden prompt into document')
-    inject_hidden_prompt_parser.add_argument('doc_path', type=str, help='Path to the document')
-    inject_hidden_prompt_parser.add_argument('doc_type', choices=['word', 'excel', 'powerpoint', 'onenote'], help='Type of the document')
+    inject_hidden_prompt_parser.add_argument('doc_path', type=str, nargs='?', default='', help='Path to the document')
+    inject_hidden_prompt_parser.add_argument('doc_type', choices=['word', 'excel', 'powerpoint', 'onenote'], nargs='?', default='word', help='Type of the document')
     inject_hidden_prompt_parser.add_argument('location', choices=[
         'rels', 'docProps', 'document', 'fontTable', 'settings', 'styles', 'theme', 'webSettings', 'docRels', 'contentTypes',
         'workbook', 'sharedStrings', 'sheet1', 'workbookRels',
         'presentation', 'slide1', 'slideLayouts', 'slideMasters', 'notesSlide', 'presentationRels',
         'onetoc2', 'section'
-    ], help='Location within the document to inject the payload')
-    inject_hidden_prompt_parser.add_argument('payload', help='Payload to be injected (text or file path)')
+    ], nargs='?', default='document', help='Location within the document to inject the payload')
+    inject_hidden_prompt_parser.add_argument('payload', nargs='?', default='', help='Payload to be injected (text or file path)')
     inject_hidden_prompt_parser.add_argument('--file', action='store_true', help='Indicate if the payload is a file path')
-
+    create_parser = subparsers.add_parser('create', help='Create various types of documents')
+    create_parser.add_argument('doc_type', choices=['word', 'excel', 'powerpoint', 'onenote', 'html'], help='Type of document to create')
+    create_parser.add_argument('--filename', '-f', type=str, default=None, help='Filename for the document')
+    create_parser.add_argument('--title', '-t', type=str, default='Title', help='Title for HTML document')
+    create_parser.add_argument('--body', '-b', type=str, default='Body', help='Body content for HTML document')
     prompt_injection_parser = subparsers.add_parser('prompt_injection', help='Apply prompt injection techniques to text')
-    prompt_injection_parser.add_argument('input', type=str, help='Input text or file')
+    prompt_injection_parser.add_argument('input', type=str, nargs='?', default='', help='Input text or file')
     prompt_injection_parser.add_argument('--techniques', nargs='+', choices=['few_shot', 'chain_of_thought', 'self_consistency', 'prompt_chaining', 'tree_of_thoughts'], required=True, help='Techniques to apply')
     prompt_injection_parser.add_argument('--examples', nargs='*', help='Examples for few-shot prompting')
     prompt_injection_parser.add_argument('--intermediate_prompts', nargs='*', help='Intermediate prompts for prompt chaining')
     prompt_injection_parser.add_argument('--output', '-o', type=str, help='Output file')
-
+    
     parser.add_argument('--help_all', action='store_true', help='Show all command options available')
 
     args = parser.parse_args()
@@ -758,5 +764,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-  
