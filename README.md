@@ -58,6 +58,9 @@ optional arguments:
   -h, --help            show this help message and exit
   --lulz                Prints a fun message
   --help_all            Show all command options available
+
+//Quickly see some examples
+cat README.md| grep -i 'python' -B2 -A2
 ```
 ## Table of Contents
 1. [Installation](#installation)
