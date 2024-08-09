@@ -75,7 +75,7 @@ def inject_hidden_prompt(doc_path, doc_type, location, text, file):
         }
     }
 
-    if doc_type not in doc_type or location not in file [doc_type]:
+    if doc_type not in doc_path or location not in file [doc_type]:
         print(f"Unsupported document type or location: {doc_type}, {location}")
         return
 
