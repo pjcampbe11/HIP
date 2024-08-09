@@ -26,625 +26,355 @@
 ⣿⣿⣫⣦⡙⢿⣿⢟⣥⢠⣿⣿⣿⣿⣿⣿⣿⣧⣙⠛⢿⡿⠉⣴⣾⣿⣿⣿⣿⡌⢣⣾⣿⡿⣡⣾⣷⠸⣸⣿⣿⣿⣷⠸⣿
 ⣻⣿⣿⣿⣟⣠⣴⣾⣣⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣸⣀⣴⣦⣘⣿⣿⣿⣿⣏⣠⣿⣿⣏⣴⣿⣿⣿⣀⣹⣿⣿⣿⣿⣇⣻
 ```
-HIP.py is a versatile script that provides various text manipulation, encryption, and document processing functionalities, inspired by CyberChef. The script allows users to encode, decode, encrypt, and manipulate text using numerous algorithms and techniques, as well as handle document creation and email sending tasks.
 
-```
-python3.9 hip.py --help-all
-usage: hip.py [-h] [--lulz] [--help_all]
-              {encode,decode,inject,inject_prompts,reveal_hidden_text,convert_tags,utf,case,reverse,decimal,hexadecimal,inject_hidden_prompt,create,function,prompt_injection,send_email}
-              ...
-hip.py: error: unrecognized arguments: --help-all
-(base) red@Reds-MacBook-Pro prompt-testing % python3.9 hip.py --help all
-usage: hip.py [-h] [--lulz] [--help_all]
-              {encode,decode,inject,inject_prompts,reveal_hidden_text,convert_tags,utf,case,reverse,decimal,hexadecimal,inject_hidden_prompt,create,function,prompt_injection,send_email}
-              ...
+# Hide Injected Prompts (HIP) Framework
 
-Hide Injected Prompts (HIP)
+## Overview
 
-positional arguments:
-  {encode,decode,inject,inject_prompts,reveal_hidden_text,convert_tags,utf,case,reverse,decimal,hexadecimal,inject_hidden_prompt,create,function,prompt_injection,send_email}
-                        Sub-command help
-    encode              Encode ASCII Art
-    decode              Decode ASCII Art
-    inject              Inject hidden text
-    inject_prompts      Inject hidden text with prompts
-    reveal_hidden_text  Reveal hidden text
-    convert_tags        Convert HTML/XML tags
-    utf                 UTF-16/UTF-8 Encode/Decode
-    case                Convert to Upper/Lower Case
-    reverse             Reverse Text
-    decimal             Convert to/From Decimal
-    hexadecimal         Convert to/From Hexadecimal
-    inject_hidden_prompt
-                        Inject hidden prompt into document
-    create              Create various types of documents
-    function            Select a function to run
-    prompt_injection    Apply prompt injection techniques to text
-    send_email          Send an email with optional attachment
+This framework is a powerful tool designed for advanced security researchers, providing the ability to inject, hide, and manipulate prompts within Microsoft Office documents (Word, Excel, PowerPoint). By leveraging a variety of encoding, encryption, and compression techniques, the script can obfuscate payloads, embedding them within document XML structures in a manner that evades detection by most security controls.
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --lulz                Prints a fun message
-  --help_all            Show all command options available
-```
 ## Table of Contents
-1. [Installation](#installation)
-2. [Usage](#usage)
-3. [Encryptions/Encodings Functions](#encryptionsencodings-functions)
-   - [AES Encryption](#aes-encryption)
-   - [Base64 Encoding](#base64-encoding)
-   - [Base32 Encoding](#base32-encoding)
-   - [Base85 Encoding](#base85-encoding)
-   - [XOR Encryption](#xor-encryption)
-   - [ROT13 Encoding](#rot13-encoding)
-   - [URL Encoding](#url-encoding)
-   - [HTML Entity Encoding](#html-entity-encoding)
-   - [Morse Code Encoding](#morse-code-encoding)
-4. [Compression/Decompression Functions](#compressiondecompression-functions)
-   - [GZIP Compression](#gzip-compression)
-   - [ZLIB Compression](#zlib-compression)
-   - [BZIP2 Compression](#bzip2-compression)
-5. [Data Formats Functions](#data-formats-functions)
-   - [Hex Dump](#hex-dump)
-   - [Base64 to Hex](#base64-to-hex)
-   - [Hex to Base64](#hex-to-base64)
-   - [Binary Conversion](#binary-conversion)
-   - [UTF-16 and UTF-8 Encoding](#utf-16-and-utf-8-encoding)
-6. [String Operations](#string-operations)
-   - [Case Conversion](#case-conversion)
-   - [Text Reversal](#text-reversal)
-   - [Decimal Conversion](#decimal-conversion)
-   - [Hexadecimal Conversion](#hexadecimal-conversion)
-   - [Octal Conversion](#octal-conversion)
-7. [Text Manipulation](#text-manipulation)
-8. [Hashing Functions](#hashing-functions)
-   - [MD5 Hash](#md5-hash)
-   - [SHA1 Hash](#sha1-hash)
-   - [SHA256 Hash](#sha256-hash)
-   - [SHA512 Hash](#sha512-hash)
-   - [CRC32 Hash](#crc32-hash)
-9. [Miscellaneous Functions](#miscellaneous-functions)
-   - [Timestamp Conversion](#timestamp-conversion)
-   - [UUID Operations](#uuid-operations)
-   - [Random Number Generation](#random-number-generation)
-   - [Math Operations](#math-operations)
-   - [JSON and XML Formatting](#json-and-xml-formatting)
-10. [Document Creation Functions](#document-creation-functions)
-    - [Word Document](#word-document)
-    - [Excel Spreadsheet](#excel-spreadsheet)
-    - [PowerPoint Presentation](#powerpoint-presentation)
-    - [OneNote Document](#onenote-document)
-    - [HTML Document](#html-document)
-11. [Email Functions](#email-functions)
-    - [Binary to Base64 Encoding](#binary-to-base64-encoding)
-    - [Base64 to Binary Decoding](#base64-to-binary-decoding)
-    - [Sending Emails](#sending-emails)
-12. [Prompt Injection Functions](#prompt-injection-functions)
-    - [Hidden Prompt Injection](#hidden-prompt-injection)
-    - [Applying Prompt Injection Techniques](#applying-prompt-injection-techniques)
-13. [Proofpoint URL Defense](#proofpoint-url-defense)
-14. [Link Encoding/Decoding](#link-encodingdecoding)
-15. [Appendix](#appendix)
-    - [Code Explanation](#code-explanation)
+
+- [Installation](#installation)
+- [Purpose](#purpose)
+- [Features](#features)
+  - [Encryption Functions](#encryption-functions)
+  - [Encoding/Decoding Functions](#encodingdecoding-functions)
+  - [Compression Functions](#compression-functions)
+  - [Microsoft Office Document Manipulation](#microsoft-office-document-manipulation)
+- [Usage](#usage)
+  - [Basic Commands](#basic-commands)
+  - [Injection Options](#injection-options)
+  - [Advanced Usage](#advanced-usage)
+  - [Inverse Operations](#inverse-operations)
+  - [Working with Zipped Documents](#working-with-zipped-documents)
+- [Code Explanation](#code-explanation)
+  - [Main Functions](#main-functions)
+  - [Advanced Combinations](#advanced-combinations)
+- [Evasion Techniques](#evasion-techniques)
+  - [Using `convert_to_tag_chars`](#using-convert_to_tag_chars)
+  - [HTML Injection Challenges](#html-injection-challenges)
+  - [High Fidelity Combinations](#high-fidelity-combinations)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Installation
 
-Before using HIP.py, ensure that you have Python 3.9 installed along with the required libraries. Install the dependencies using the following command:
+Ensure you have Python 3.9 or later installed. The required libraries can be installed using `pip3.9`:
 
 ```
 pip3.9 install python-docx openpyxl python-pptx pycryptodome
 ```
-Usage
 
-HIP.py can be executed from the command line. The script supports a variety of options and commands. Below are detailed usage examples for each functionality.
+Clone this repository:
 
-Encryptions/Encodings Functions
-
-AES Encryption
-
-Encrypt a message:
-```
-python3.9 hip.py --aes-encrypt "Your message" --password "yourpassword"
 ```
-Decrypt a message:
+git clone https://github.com/your-repo/hide-injected-prompts.git
+cd hide-injected-prompts
 ```
-python3.9 hip.py --aes-decrypt "Encrypted message" --password "yourpassword"
-```
-Base64 Encoding
 
-Encode a message in Base64:
-```
-python3.9 hip.py --base64-encode "Your message"
-```
-Decode a Base64 encoded message:
+## Purpose
 
-```
-python3.9 hip.py --base64-decode "Base64 encoded message"
-```
-Base32 Encoding
+This script is designed for security researchers who need to inject, hide, and manipulate prompts within Microsoft Office documents. It is particularly useful for testing the limits of document-based security controls by embedding complex and layered payloads within the document’s XML structure.
 
-Encode a message in Base32:
+## Features
 
-```
-python3.9 hip.py --base32-encode "Your message"
-```
-Decode a Base32 encoded message:
+### Encryption Functions
 
-```
-python3.9 hip.py --base32-decode "Base32 encoded message"
-```
-Base85 Encoding
+- **AES Encryption/Decryption**
+  - `aes_encrypt(text, password)`: Encrypts `text` using AES encryption with the provided `password`.
+  - `aes_decrypt(enc_text, password)`: Decrypts `enc_text using AES encryption with the provided `password`.
 
-Encode a message in Base85:
+- **XOR Encryption/Decryption**
+  - `xor_encrypt(text, key)`: Encrypts `text` using the XOR cipher with the provided `key`.
+  - `xor_decrypt(enc_text, key)`: Decrypts `enc_text using the XOR cipher with the provided `key`.
 
-```
-python3.9 hip.py --base85-encode "Your message"
-```
-Decode a Base85 encoded message:
+### Encoding/Decoding Functions
 
-```
-python3.9 hip.py --base85-decode "Base85 encoded message"
-```
-XOR Encryption
+- **Base64/Base32/Base85**
+  - Encoding and decoding functions for converting text into different base formats (Base64, Base32, Base85).
 
-Encrypt a message with XOR:
+- **ROT13**
+  - A simple letter substitution cipher that replaces a letter with the 13th letter after it in the alphabet.
 
-```
-python3.9 hip.py --xor-encrypt "Your message" --key "yourkey"
-```
-Decrypt a message with XOR:
-```
-python3.9 hip.py --xor-decrypt "Encrypted message" --key "yourkey"
-```
-ROT13 Encoding
+- **URL Encoding**
+  - Converts characters into a format that can be transmitted over the internet.
 
-Encode a message in ROT13:
-```
-python3.9 hip.py --rot13 "Your message"
-```
-URL Encoding
+- **HTML Entity Encoding**
+  - Converts special characters into HTML entities to hide payloads within HTML content.
 
-Encode a message in URL encoding:
-```
-python3.9 hip.py --url-encode "Your message"
-```
-Decode a URL encoded message:
-```
-python3.9 hip.py --url-decode "URL encoded message"
-```
-HTML Entity Encoding
+### Compression Functions
 
-Encode a message in HTML entities:
-```
-python3.9 hip.py --html-encode "Your message"
-```
-Decode HTML entities:
+- **Gzip, Zlib, Bzip2**
+  - Compress and decompress text using standard compression algorithms. These functions can reduce the size of the payloads, making them easier to inject into documents.
 
-```
-python3.9 hip.py --html-decode "HTML encoded message"
-```
-Morse Code Encoding
 
-Encode a message in Morse code:
-```
-python3.9 hip.py --morse-encode "Your message"
-```
-Decode a Morse code message:
-```
-python3.9 hip.py --morse-decode "Morse code message"
-```
-Compression/Decompression Functions
+### Microsoft Office Document Manipulation
 
-GZIP Compression
+The framework provides extensive functionality for injecting payloads into various locations within Microsoft Word, Excel, and PowerPoint documents. These injections are executed within the XML structure of the document after it has been unzipped and can target a wide range of components, such as headers, footers, metadata, relationships (`.rels` files), and more.
 
-Compress a message with GZIP:
-```
-python3.9 hip.py --gzip-compress "Your message"
-```
-Decompress a GZIP compressed message:
-```
-python3.9 hip.py --gzip-decompress "GZIP compressed message"
-```
-ZLIB Compression
+#### Injection Locations:
 
-Compress a message with ZLIB:
-```
-python3.9 hip.py --zlib-compress "Your message"
-```
-Decompress a ZLIB compressed message:
+- **Word Documents** (`.docx`):
+  - `rels`, `docProps`, `document`, `fontTable`, `settings`, `styles`, `theme`, `webSettings`, `docRels`, `contentTypes`
 
-```
-python3.9 hip.py --zlib-decompress "ZLIB compressed message"
-```
-BZIP2 Compression
+- **Excel Documents** (`.xlsx`):
+  - `workbook`, `sharedStrings`, `sheet1`, `workbookRels`, `docProps`
 
-Compress a message with BZIP2:
-```
-python3.9 hip.py --bzip2-compress "Your message"
-```
-Decompress a BZIP2 compressed message:
-```
-python3.9 hip.py --bzip2-decompress "BZIP2 compressed message"
-```
-Data Formats Functions
+- **PowerPoint Presentations** (`.pptx`):
+  - `presentation`, `slide1`, `slideLayouts`, `slideMasters`, `notesSlide`, `presentationRels`, `docProps`
 
-Hex Dump
+## Usage
 
-Generate a hex dump of a message:
-```
-python3.9 hip.py --hex-dump "Your message"
-```
-Base64 to Hex
+### Basic Commands
 
-Convert a Base64 encoded message to hex:
-```
-python3.9 hip.py --base64-to-hex "Base64 encoded message"
-```
-Hex to Base64
+#### Injecting a Payload into a Word Document:
 
-Convert a hex encoded message to Base64:
 ```
-python3.9 hip.py --hex-to-base64 "Hex encoded message"
+python3.9 hip.py inject_hidden_prompt document.docx word document "Your hidden prompt here"
 ```
-Binary Conversion
 
-Convert a message to binary:
-```
-python3.9 hip.py --to-binary "Your message"
-```
-Convert a binary message to text:
-```
-python3.9 hip.py --from-binary "Binary message"
-```
-UTF-16 and UTF-8 Encoding
+This command injects the specified prompt into the main document XML of a Word file.
 
-Convert a message to UTF-16:
-```
-python3.9 hip.py --to-utf16 "Your message"
-```
-Convert a UTF-16 message to UTF-8:
-```
-python3.9 hip.py --utf16-to-utf8 "UTF-16 message"
-```
-Convert a message to UTF-8:
-```
-python3.9 hip.py --to-utf8 "Your message"
-```
-Convert a UTF-8 message to UTF-16:
+#### Injecting into an Excel Document:
+
 ```
-python3.9 hip.py --utf8-to-utf16 "UTF-8 message"
+python3.9 hip.py inject_hidden_prompt spreadsheet.xlsx excel sheet1 "Your hidden prompt here"
 ```
-String Operations
 
-Case Conversion
+Injects the hidden prompt into the primary sheet (Sheet1) of an Excel document.
 
-Convert a message to uppercase:
-```
-python3.9 hip.py --uppercase "Your message"
-```
-Convert a message to lowercase:
-```
-python3.9 hip.py --lowercase "Your message"
-```
-Text Reversal
+#### Injecting into a PowerPoint Presentation:
 
-Reverse a message:
 ```
-python3.9 hip.py --reverse "Your message"
+python3.9 hip.py inject_hidden_prompt presentation.pptx powerpoint slide1 "Your hidden prompt here"
 ```
-Decimal Conversion
 
-Convert a message to decimal:
-```
-python3.9 hip.py --to-decimal "Your message"
-```
-Convert a decimal message to text:
+This command injects the hidden prompt into the first slide of a PowerPoint presentation.
 
-```
-python3.9 hip.py --from-decimal "Decimal message"
-```
-Hexadecimal Conversion
+### Injection Options
 
-Convert a message to hexadecimal:
-```
-python3.9 hip.py --to-hex "Your message"
-```
-Convert a hexadecimal message to text:
-```
-python3.9 hip.py --from-hex "Hexadecimal message"
-```
-Octal Conversion
+#### Injecting into Multiple Locations:
 
-Convert a message to octal:
 ```
-python3.9 hip.py --to-octal "Your message'
+python3.9 hip.py inject_hidden_prompt document.docx word "rels,docProps,document" "Your hidden prompt here"
 ```
-Convert an octal message to text:
-```
-python3.9 hip.py --from-octal "Octal message"
-```
-Text Manipulation
 
-Perform various text manipulations
+This command injects the payload into the specified locations within a Word document. The payload is injected into the relationships file (`rels`), document properties (`docProps`), and the main document XML (`document`).
 
-Hashing Functions
+#### Using Payload Files:
 
-MD5 Hash
-
-Generate an MD5 hash of a message:
 ```
-python3.9 hip.py --md5 "Your message"
+python3.9 hip.py inject_hidden_prompt document.docx word document --file payload.txt
 ```
-SHA1 Hash
 
-Generate a SHA1 hash of a message:
-```
-python3.9 hip.py --sha1 "Your message"
-```
-SHA256 Hash
+This command reads the payload from `payload.txt` and injects it into the main document XML of a Word file.
 
-Generate a SHA256 hash of a message:
-```
-python3.9 hip.py --sha256 "Your message"
-```
-SHA512 Hash
+### Advanced Usage
 
-Generate a SHA512 hash of a message:
-```
-python3.9 hip.py --sha512 "Your message"
-```
-CRC32 Hash
+#### Working with Zipped Documents
 
-Generate a CRC32 hash of a message:
-```
-python3.9 hip.py --crc32 "Your message"
-```
-Miscellaneous Functions
+For more advanced users, injecting into the raw XML of zipped Office documents provides the ability to target specific components:
 
-Timestamp Conversion
+1. **Unzip the Document:**
 
-Convert a timestamp to human-readable format:
-```
-python3.9 hip.py --timestamp-to-human "timestamp"
-```
-Convert a human-readable date to timestamp:
-```
-python3.9 hip.py --human-to-timestamp "date"
-```
-UUID Operations
+   ```
+   unzip document.docx -d unzipped_doc
+   ```
 
-Generate a UUID:
-```
-python3.9 hip.py --generate-uuid
-```
-Convert a UUID to integer:
-```
-python3.9 hip.py --uuid-to-int "UUID"
-```
-Convert an integer to UUID:
-```
-python3.9 hip.py --int-to-uuid "integer"
-```
-Random Number Generation
+2. **Inject into the XML:**
 
-Generate a random number:
-```
-python3.9 hip.py --random-number
-```
-Math Operations
+   Use the following command to inject a hidden prompt into an XML file within the unzipped document structure:
 
-Perform basic math operations:
-```
-python3.9 hip.py --math "operation"
-```
-JSON and XML Formatting
+   ```
+   python3.9 hip.py inject_hidden_prompt unzipped_doc/word/document.xml word document "Your hidden prompt here"
+   ```
 
-Format JSON data:
-```
-python3.9 hip.py --format-json "JSON data"
-```
-Minify JSON data:
-```
-python3.9 hip.py --minify-json "JSON data"
-```
-Pretty-print XML data:
-```
-python3.9 hip.py --pretty-print-xml "XML data"
-```
-Parse XML data:
-```
-python3.9 hip.py --parse-xml "XML data"
-```
-Document Creation Functions
+3. **Re-zip the Document:**
 
-Word Document
+   After injection, re-zip the document:
 
-Create a Word document:
+   ```
+   cd unzipped_doc
+   zip -r ../document_with_payload.docx *
+   cd ..
+   ```
 
-```
-python3.9 hip.py --create-word "filename"
-```
-Excel Spreadsheet
+   The `document_with_payload.docx` now contains the injected content.
 
-Create an Excel spreadsheet:
-```
-python3.9 hip.py --create-excel "filename"
-```
-PowerPoint Presentation
+#### Injecting into Other Document Types:
 
-Create a PowerPoint presentation:
-```
-python3.9 hip.py --create-powerpoint "filename"
-```
-OneNote Document
+Similar steps can be followed for Excel and PowerPoint files, targeting specific XML components within the unzipped structure.
 
-Create a OneNote document:
 ```
-python3.9 hip.py --create-onenote "filename"
+# For Excel:
+unzip spreadsheet.xlsx -d unzipped_xls
+python3.9 hip.py inject_hidden_prompt unzipped_xls/xl/sharedStrings.xml excel sharedStrings "Your hidden prompt here"
+zip -r ../spreadsheet_with_payload.xlsx *
 ```
-HTML Document
 
-Create an HTML document:
 ```
-python3.9 hip.py --create-html "filename" "title" "body"
+# For PowerPoint:
+unzip presentation.pptx -d unzipped_ppt
+python3.9 hip.py inject_hidden_prompt unzipped_ppt/ppt/slides/slide1.xml powerpoint slide1 "Your hidden prompt here"
+zip -r ../presentation_with_payload.pptx *
 ```
-Email Functions
 
-Binary to Base64 Encoding
+### Inverse Operations
 
-Encode a binary file to Base64:
-```
-python3.9 hip.py --binary-to-base64 "input_file" "output_file"
-```
-Base64 to Binary Decoding
+To reverse an injection and extract the embedded prompt:
 
-Decode a Base64 file to binary:
-```
-python3.9 hip.py --base64-to-binary "input_base64_file" "output_file"
-```
-Sending Emails
+#### Extracting from Word:
 
-Send an email:
 ```
-python3.9 hip.py --send-email "sender" "recipient" "subject" "body" "smtp_server" "attachment_path"
+python3.9 hip.py extract_hidden_prompt document_with_payload.docx word document
 ```
-Prompt Injection Functions
 
-Hidden Prompt Injection
+This command extracts the hidden prompt from the main document XML of the Word file.
 
-Inject a hidden prompt into a document:
-```
-python3.9 hip.py --inject-hidden-prompt "doc_path" "doc_type" "location" 
-"payload" "is_file"
-```
-Applying Prompt Injection Techniques
+#### Extracting from Excel:
 
-Apply prompt injection techniques:
 ```
-python3.9 hip.py --apply-prompt-injections "input_text" "techniques" "examples" "intermediate_prompts"
+python3.9 hip.py extract_hidden_prompt spreadsheet_with_payload.xlsx excel sheet1
 ```
-Proofpoint URL Defense
-
-Decode Proofpoint URL Defense links
 
-Decode a Proofpoint URL Defense (v3) link:
-```
-python3.9 hip.py --decode-url-defense "link"
-```
-Link Encoding/Decoding
+This command extracts the hidden prompt from the primary sheet (Sheet1) of the Excel document.
 
-Encode a link to Base64
+### Inverse Injection with Complex Operations:
 
-Encode a link:
-```
-python3.9 hip.py --encode-link "link"
-```
-Decode a Base64 encoded link
+If an operation involves multiple techniques (encryption, encoding, compression), the inverse would involve reversing each operation step by step:
 
-Decode a link:
 ```
-python3.9 hip.py --decode-link "encoded_link"
+python3.9 hip.py extract_hidden_prompt presentation_with_payload.pptx powerpoint slide1 --decrypt aes --decode base85 --decompress gzip --password MySecurePassword
 ```
-# Detailed Explanation
-
-The HIP script is designed to provide a wide range of functionalities through a command-line interface. Each command is associated with a specific operation, allowing users to perform complex text processing, encryption, encoding, and other tasks with ease. The script leverages various Python libraries to implement these functionalities, ensuring high performance and reliability.
-
-## When to Use Each Function
 
-- **Hidden Prompt Injection**: Use this feature to inject hidden prompts into documents for testing or other purposes.
-- **Text Processing**: Useful for encoding messages in ASCII art, generating text embeddings, and converting tags.
-- **Encryptions/Encodings**: Use these functions for secure text encryption, encoding, and decoding.
-- **Compression/Decompression**: Compress or decompress text data for efficient storage or transmission.
-- **Data Formats**: Convert text to different formats for compatibility with various applications.
-- **Conversion**: Change text case, reverse text, or convert text to different numeric bases.
-- **String Operations**: Perform find/replace, split/join operations, and other string manipulations.
-- **Hashing**: Generate hashes for data integrity verification.
-- **Miscellaneous**: Perform timestamp conversions, generate/validate UUIDs, generate random numbers, perform math operations, and format/parse JSON/XML data.
 
 ## Code Explanation
 
-The `hip.py` script is organized into various sections, each providing specific functionalities. Here is a detailed explanation of the script:
+### Main Functions
 
-### Imports
+- **_prompt_parser**:
+  - The `_prompt_parser` subparser is crucial for handling the different types of documents and locations where payloads can be injected. This function ensures that each document type (`word`, `excel`, `powerpoint`) and location (e.g., `document`, `sheet1`, `slide1`) is correctly targeted during the injection process.
 
-The script begins with importing necessary libraries:
+### Advanced Combinations
 
-- `argparse` for parsing command-line arguments.
-- `base64`, `re`, `zipfile`, `os`, `pyperclip`, `datetime`, `uuid`, `random`, `json`, `hashlib`, `binascii`, `gzip`, `zlib`, `bz2`, `urllib.parse`, `html` for various operations.
-- `Crypto.Cipher` and `Crypto.Random` for AES encryption.
+Here are some advanced combinations using the framework to achieve more complex injection scenarios:
 
-### Encryption/Encoding Functions
+#### Example 1: AES Encryption + Base85 Encoding + Gzip Compression
 
-These functions handle encryption and encoding operations:
+```
+python3.9 hip.py inject_hidden_prompt document.docx word document "Your hidden prompt here" --encrypt aes --encode base85 --compress gzip --password MySecurePassword
+```
 
-- **AES Encryption/Decryption**: Uses a password to encrypt/decrypt text using AES-GCM.
-- **Base64, Base32, Base85 Encode/Decode**: Encodes/decodes text in various base formats.
-- **XOR Encryption**: Encrypts text using XOR with a key.
-- **ROT13**: Applies ROT13 encoding to text.
-- **URL Encode/Decode**: Encodes/decodes text for safe URL transmission.
-- **HTML Entity Encode/Decode**: Encodes/decodes text as HTML entities.
-- **Morse Code Encode/Decode**: Encodes/decodes text in Morse code.
+#### Example 2: XOR Encryption + ROT13 + HTML Entity Encoding
 
-### Compression/Decompression Functions
+```
+python3.9 hip.py inject_hidden_prompt spreadsheet.xlsx excel sheet1 "Your hidden prompt here" --encrypt xor --encode rot13 --encode html_entity --key MyXORKey
+```
 
-These functions handle text compression and decompression:
+#### Example 3: Multi-Location Injection with Complex Encoding
 
-- **Gzip, Zlib, Bzip2 Compress/Decompress**: Compresses/decompresses text using different algorithms.
+```
+python3.9 hip.py inject_hidden_prompt document.docx word "rels,document,styles" "Your hidden prompt here" --encode base64 --compress zlib
+```
 
-### Data Formats Functions
+### Evasion Techniques
 
-These functions convert text between different formats:
+### Security Implications of `convert_to_tag_chars`
 
-- **Hex Dump/From Hex Dump**: Converts text to/from hexadecimal representation.
-- **Base64 to Hex/Hex to Base64**: Converts text between Base64 and hexadecimal formats.
-- **Binary to Hex/Hex to Binary**: Converts text between binary and hexadecimal formats.
-- **UTF-16, UTF-8 Encode/Decode**: Encodes/decodes text in UTF-16 and UTF-8.
+The `convert_to_tag_chars` function performs a transformation on an input string by converting each character into a special Unicode character from the Supplementary Private Use Area-A (U+E0000 to U+E007F). This technique can have various implications in the context of security.
 
-### Conversion Functions
+```
+def convert_to_tag_chars(input_string):
+    return ''.join(chr(0xE0000 + ord(ch)) for ch in input_string)
 
-These functions perform various text conversions:
+user_input = input()
 
-- **Case Conversion**: Converts text to upper/lower case.
-- **Reverse Text**: Reverses the order of characters in text.
-- **Decimal, Hexadecimal, Octal Conversion**: Converts text to/from different numeric bases.
+tagged_output = convert_to_tag_chars(user_input)
+print("Tagged output:", tagged_output)
+pyperclip.copy(tagged_output)
+```
+The provided code performs a specific transformation on an input string, converting each character into a special Unicode character from the Supplementary Private Use Area-A (U+E0000 to U+E007F). This operation is particularly interesting and can have various implications in the context of security.
 
-### String Operations Functions
+Code Breakdown
 
-These functions perform operations on strings:
+Let's break down what each part of the code is doing:
 
-- **Find/Replace**: Finds and replaces text.
-- **Split/Join**: Splits text into a list or joins a list into text.
-- **Length**: Calculates the length of text.
-- **Truncate**: Truncates text to a specified length.
-- **Pad**: Pads text to a specified length with a character.
-- **Extract Regex**: Extracts text matching a regular expression.
-- **Escape/Unescape**: Escapes/unescapes special characters.
+convert_to_tag_chars(input_string) Function:
 
-### Hashing Functions
+This function takes a string input_string as its argument.
+It converts each character in the input_string into a corresponding character in the Supplementary Private Use Area-A by adding 0xE0000 to the Unicode code point (ord(ch)) of each character in the input string.
 
-These functions generate hashes of text:
+The resulting characters are then joined together to form a new string, which is returned.
+Example: If input_string is "abc", the function will convert 'a' to a character at 0xE0000 + ord('a'), 'b' to 0xE0000 + ord('b'), and so on, resulting in a string of characters from this private use area.
 
-- **MD5, SHA-1, SHA-256, SHA-512**: Generates different types of hashes.
-- **CRC32**: Generates a CRC32 checksum.
+Technical Depth
 
-### Miscellaneous Functions
+The core operation here is the conversion of standard ASCII or Unicode characters into characters from the Supplementary Private Use Area-A. This area of Unicode is typically reserved for custom, non-standard characters that do not have a predefined meaning in Unicode. The code effectively creates a "tagged" or obfuscated version of the input string that may look completely different from the original but can be reverted back if the same transformation logic is known.
 
-These functions provide various utilities:
+Security Risks
 
-- **Timestamp Convert**: Converts text to/from a timestamp.
-- **UUID Generate/Validate**: Generates/validates UUIDs.
-- **Random Number Generation**: Generates a random number in a range.
-- **Math Operations**: Evaluates mathematical expressions.
-- **JSON/XML Format/Parse**: Formats/parses JSON and XML data.
+Obfuscation of Malicious Content:
 
-### Main Function
+Stealthy Data Exfiltration: The convert_to_tag_chars function can be used to obfuscate malicious content or sensitive data. For example, an attacker could use this technique to hide payloads in a document or transmitted data, making it difficult for security systems to recognize or detect.
 
-The main function sets up argument parsing and handles the different commands and options. Each command is associated with a specific operation, and the function calls the appropriate utility functions based on the command-line arguments.
+Evasion of Security Controls: Since the characters generated by this transformation are from a private use area, many text processing systems, filters, and security tools may not be configured to handle or recognize these characters. This could allow malicious code or data to bypass content filtering mechanisms.
 
-## Conclusion
+Phishing and Social Engineering:
 
-HIP is a powerful and versatile tool for text processing, encryption, encoding, and more. Its comprehensive set of features and flexible command-line interface make it suitable for a wide range of tasks. Whether you need to inject hidden prompts into documents, perform complex text manipulations, or secure your data with encryption, HIP has you covered.
+Phishing: The obfuscation can be used in phishing attacks where the displayed text looks innocuous, but the underlying content has been converted into something that evades detection. This could be used in URLs or other text-based phishing strategies.
+
+Manipulation of UI: Users might not be aware that the text they see is not standard text, leading to potential misinterpretation or the execution of unintended actions.
+
+Clipboard Hijacking:
+
+Malicious Clipboard Content: The use of pyperclip.copy(tagged_output) to copy the obfuscated content to the clipboard could be exploited in scenarios where a user might unknowingly paste this content into another application, potentially introducing obfuscated malicious code into a document, command line, or other critical environments.
+
+Data Integrity Issues:
+
+Data Corruption: If this obfuscated text is stored or transmitted without proper handling, it might lead to data corruption, especially if the receiving end does not support or expect characters from the Supplementary Private Use Area-A.
+
+### HTML Injection Challenges
+
+Embedding encoded payloads within an HTML file poses significant challenges for defenders. The use of multiple encoding schemes within an HTML structure can obscure the true nature of the payload, making it difficult for security controls to parse and detect the malicious content.
+
+### High Fidelity Combinations
+
+Here are five high-fidelity combinations that could leave security controls confused:
+
+1. **Triple Encoding**: Base85 + ROT13 + URL Encode
+   ```
+   python3.9 hip.py inject_hidden_prompt presentation.pptx powerpoint slide1 "Your hidden prompt here" --encode base85 --encode rot13 --url-encode
+   ```
+
+2. **Compression + XOR + HTML Entity Encoding**
+   ```
+   python3.9 hip.py inject_hidden_prompt spreadsheet.xlsx excel sharedStrings "Your hidden prompt here" --compress zlib --encrypt xor --encode html_entity --key ComplexXORKey
+   ```
+
+3. **Multi-Layer Encryption**: AES + XOR
+   ```
+   python3.9 hip.py inject_hidden_prompt document.docx word document "Your hidden prompt here" --encrypt aes --encrypt xor --password AES_Pass --key XOR_Key
+   ```
+
+4. **Base64 + Gzip Compression**
+   ```
+   python3.9 hip.py inject_hidden_prompt spreadsheet.xlsx excel sheet1 "Your hidden prompt here" --encode base64 --compress gzip
+   ```
+
+5. **URL Encode + ROT13 + Gzip Compression**
+   ```
+   python3.9 hip.py inject_hidden_prompt presentation.pptx powerpoint notesSlide "Your hidden prompt here" --url-encode --encode rot13 --compress gzip
+   ```
+## Contributing
+
+We welcome contributions from the community. Please follow the standard GitHub flow:
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Create a pull request.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
