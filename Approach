@@ -1,13 +1,13 @@
-Use this tool to generate prompts
 
-Use https://jinja.palletsprojects.com/en/3.1.x/intro/#installationfor the template 
+Use https://jinja.palletsprojects.com/en/3.1.x/intro/#installation for the template Then use SafetyPrompts or some other dataset as the dource for Prompt flow
 
-Then use SafetyPrompts or some other dataset as the dource for Prompt flow
 Then, if the HIP script works then use that for the final part of setup. 
 I used AI to analyze the script so a descion can be made quickly reagding if it will be used or not
 If not, just use a few common locations in the docs to get the injections in
 I have another set of about 10-15 decent prompts to test
 Lastly, prompts on a web server and maybe inject prompts into a HTML file and sens as attachmet
+
+Use this tool to generate prompts
 
 Prompt flow
 
