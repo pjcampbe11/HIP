@@ -31,9 +31,112 @@ try:
 except ImportError as e:
     print(f'Error: {e}')
     print('Please install the missing libraries using pip:')
-    print('pip install python-docx openpyxl python-pptx pycryptodome')
+    print('pip3.9 install python-docx openpyxl python-pptx pycryptodome')
     sys.exit(1)
 
+
+def inject_hidden_prompt(doc_path, doc_type, location, text, file):
+    # Determine the file paths based on document type and location
+    target_file = {
+        'word': {
+            'rels': '_rels/.rels',
+            'docProps': 'docProps/core.xml',
+            'document': 'word/document.xml',
+            'fontTable': 'word/fontTable.xml',
+            'settings': 'word/settings.xml',
+            'styles': 'word/styles.xml',
+            'theme': 'word/theme/theme1.xml',
+            'webSettings': 'word/webSettings.xml',
+            'docRels': 'word/_rels/document.xml.rels',
+            'contentTypes': '[Content_Types].xml'
+        },
+        'excel': {
+            'rels': '_rels/.rels',
+            'docProps': 'docProps/core.xml',
+            'workbook': 'xl/workbook.xml',
+            'styles': 'xl/styles.xml',
+            'sharedStrings': 'xl/sharedStrings.xml',
+            'theme': 'xl/theme/theme1.xml',
+            'sheet1': 'xl/worksheets/sheet1.xml',
+            'workbookRels': 'xl/_rels/workbook.xml.rels',
+            'contentTypes': '[Content_Types].xml'
+        },
+        'powerpoint': {
+            'rels': '_rels/.rels',
+            'docProps': 'docProps/core.xml',
+            'presentation': 'ppt/presentation.xml',
+            'slide1': 'ppt/slides/slide1.xml',
+            'slideLayouts': 'ppt/slideLayouts/slideLayout1.xml',
+            'slideMasters': 'ppt/slideMasters/slideMaster1.xml',
+            'notesSlide': 'ppt/notesSlides/notesSlide1.xml',
+            'theme': 'ppt/theme/theme1.xml',
+            'presentationRels': 'ppt/_rels/presentation.xml.rels',
+            'contentTypes': '[Content_Types].xml'
+        }
+    }
+
+    if doc_type not in doc_path or location not in [doc_type]:
+        print(f"Unsupported document type or location: {doc_type}, {location}")
+        return
+
+    target_file = doc_path[doc_type][location]
+
+    # Read the payload
+    if not file:
+     open(file, 'r')
+     payload_content = text
+    else:
+        payload_content = file.read()
+   
+    
+
+    # Unzip the document
+    unzip_dir = 'unzipped_doc'
+    if os.path.exists(unzip_dir):
+        shutil.rmtree(unzip_dir)
+    os.makedirs(unzip_dir)
+
+    with zipfile.ZipFile(doc_path, 'r') as zip_ref:
+        zip_ref.extractall(unzip_dir)
+
+    # Inject the hidden prompt
+    content_path = os.path.join(unzip_dir, target_file)
+    if not os.path.exists(content_path):
+        print(f"Target file {content_path} not found in the document.")
+        return
+
+    with open(content_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+    
+    # Determine the injection point and create the payload XML
+    if location == 'rels':
+        injection_point = '</Relationships>'
+        payload_xml = f'<Relationship Id="rIdHidden" Type="http://schemas.microsoft.com/office/2006/relationships/customXml" Target="{payload_content}"/>'
+    elif location == 'docProps':
+        injection_point = '</cp:coreProperties>'
+        payload_xml = f'<property name="hiddenPrompt" fmtid="{{D5CDD505-2E9C-101B-9397-08002B2CF9AE}}" pid="2"><vt:lpwstr>{payload_content}</vt:lpwstr></property>'
+    elif location in ['document', 'workbook', 'presentation']:
+        injection_point = '</w:document>' if location == 'document' else '</workbook>' if location == 'workbook' else '</p:presentation>'
+        payload_xml = f'<customXml><hiddenPrompt>{payload_content}</hiddenPrompt></customXml>'
+    else:
+        print(f"Location {location} is not supported for payload injection.")
+        return
+
+    content = content.replace(injection_point, f'{payload_xml}{injection_point}')
+    
+    # Write the updated content back
+    with open(content_path, 'w', encoding='utf-8') as file:
+        file.write(content)
+    
+    # Zip the document back up
+    modified_doc_path = f'modified_{os.path.basename(doc_path)}'
+    with zipfile.ZipFile(modified_doc_path, 'w', zipfile.ZIP_DEFLATED) as zip_ref:
+        for folder_name, subfolders, filenames in os.walk(unzip_dir):
+            for filename in filenames:
+                file_path = os.path.join(folder_name, filename)
+                zip_ref.write(file_path, os.path.relpath(file_path, unzip_dir))
+    
+    print(f"Modified document saved as: {modified_doc_path}")
 # Encryption/Encoding Functions
 def aes_encrypt(text, password):
     salt = get_random_bytes(16)
@@ -371,6 +474,7 @@ def send_email(sender, recipient, subject, body, smtp_server, attachment_path=No
         encoders.encode_base64(part)
         part.add_header('Content-Disposition', f'attachment; filename= {os.path.basename(attachment_path)}')
         msg.attach(part)
+
     server = smtplib.SMTP(smtp_server, 587)
     server.starttls()
     server.sendmail(sender, recipient, msg.as_string())
@@ -469,21 +573,29 @@ def print_remote_prompts():
 def main():
     parser = argparse.ArgumentParser(description='Hide Injected Prompts (HIP)')
     subparsers = parser.add_subparsers(dest='command', help='Sub-command help')
+     # Define the 'inject_hidden_prompt' subcommand
+    parser = subparsers.add_parser('inject_hidden_prompt', help='Inject hidden prompt into document')
+    parser.add_argument('doc_type', choices=['word', 'excel', 'powerpoint'], help="Type of the document")
+    parser.add_argument('location', choices=['rels', 'docProps', 'document', 'fontTable', 'settings', 'styles', 'theme', 'webSettings', 'docRels', 'contentTypes', 'workbook', 'sharedStrings', 'sheet1', 'workbookRels', 'presentation', 'slide1', 'slideLayouts', 'slideMasters', 'notesSlide', 'presentationRels'], help="Location within the document to inject the payload")
+    parser.add_argument('payload', help="Payload to be injected (text or file path)")
+    parser.add_argument('--file', action='store_true', help="Indicate if the payload is a file path")
+    parser.add_argument('function', type=str, help="The function to execute")
+    parser.add_argument('text', type=str, nargs='?', default='', help="Input text for the function")
+    parser.add_argument('--password', type=str, help="Password for encryption functions")
+    parser.add_argument('--key', type=str, help="Key for XOR encryption")
+    parser.add_argument('--start', type=int, help="Start range for random number generation")
+    parser.add_argument('--end', type=int, help="End range for random number generation")
+    parser.add_argument('--mode', type=str, help="Mode for timestamp conversion")
+    parser.add_argument('--expression', type=str, help="Mathematical expression for calculation")
+    parser.add_argument('--find', type=str, help="String to find")
+    parser.add_argument('--replace', type=str, help="String to replace with")
+    parser.add_argument('--pattern', type=str, help="Regex pattern for extraction")
+    parser.add_argument('--length', type=int, help="Length for padding or truncation")
+    parser.add_argument('--char', type=str, help="Character for padding")
 
+    args = parser.parse_args()
     function_parser = subparsers.add_parser('function', help='Select a function to run')
-    function_parser.add_argument('function', choices=[
-        'aes_encrypt', 'aes_decrypt', 'base64_encode', 'base64_decode', 'base32_encode', 'base32_decode',
-        'base85_encode', 'base85_decode', 'xor_encrypt', 'xor_decrypt', 'rot13', 'url_encode', 'url_decode',
-        'html_entity_encode', 'html_entity_decode', 'morse_code_encode', 'morse_code_decode', 'gzip_compress',
-        'gzip_decompress', 'zlib_compress', 'zlib_decompress', 'bzip2_compress', 'bzip2_decompress', 'hex_dump',
-        'from_hex_dump', 'base64_to_hex', 'hex_to_base64', 'to_binary', 'from_binary', 'utf16_encode', 'utf16_decode',
-        'utf8_encode', 'utf8_decode', 'to_upper_case', 'to_lower_case', 'reverse_text', 'to_decimal', 'from_decimal',
-        'to_hexadecimal', 'from_hexadecimal', 'to_octal', 'from_octal', 'find_replace', 'split', 'join', 'length',
-        'truncate', 'pad', 'extract_regex', 'escape', 'unescape', 'md5', 'sha1', 'sha256', 'sha512', 'crc32',
-        'timestamp_convert', 'uuid_generate', 'uuid_validate', 'random_number', 'math_operations', 'format_json',
-        'parse_json', 'format_xml', 'parse_xml','convert_to_tag_chars','send_email','show_email_options','create_html_document'
-    ], help='Function to run')
-
+    function_parser.add_argument('function', choices=['aes_encrypt', 'aes_decrypt', 'base64_encode', 'base64_decode', 'base32_encode', 'base32_decode','base85_encode', 'base85_decode', 'xor_encrypt', 'xor_decrypt', 'rot13', 'url_encode', 'url_decode','html_entity_encode', 'html_entity_decode', 'morse_code_encode', 'morse_code_decode', 'gzip_compress','gzip_decompress', 'zlib_compress', 'zlib_decompress', 'bzip2_compress', 'bzip2_decompress', 'hex_dump','from_hex_dump', 'base64_to_hex', 'hex_to_base64', 'to_binary', 'from_binary', 'utf16_encode', 'utf16_decode','utf8_encode', 'utf8_decode', 'to_upper_case', 'to_lower_case', 'reverse_text', 'to_decimal', 'from_decimal','to_hexadecimal', 'from_hexadecimal', 'to_octal', 'from_octal', 'find_replace', 'split', 'join', 'length','truncate', 'pad', 'extract_regex', 'escape', 'unescape', 'md5', 'sha1', 'sha256', 'sha512', 'crc32','timestamp_convert', 'uuid_generate', 'uuid_validate', 'random_number', 'math_operations', 'format_json','parse_json', 'format_xml', 'parse_xml','convert_to_tag_chars','send_email','show_email_options','create_html_document'], help='Function to run')
     function_parser.add_argument('--text', '-t', type=str, help='Text input for the function')
     function_parser.add_argument('--password', '-p', type=str, help='Password for encryption/decryption functions')
     function_parser.add_argument('--key', '-k', type=str, help='Key for XOR encryption/decryption functions')
@@ -497,27 +609,49 @@ def main():
     function_parser.add_argument('--length', '-l', type=int, help='Length for truncate/pad functions')
     function_parser.add_argument('--char', '-c', type=str, help='Padding character')
     function_parser.add_argument('--pattern', type=str, help='Regex pattern for extract_regex function')
-
-    inject_hidden_prompt_parser = subparsers.add_parser('inject_hidden_prompt', help='Inject hidden prompt into document')
-    inject_hidden_prompt_parser.add_argument('doc_path', type=str, nargs='?', default='', help='Path to the document')
-    inject_hidden_prompt_parser.add_argument('doc_type', choices=['word', 'excel', 'powerpoint'], nargs='?', default='word', help='Type of the document')
-    inject_hidden_prompt_parser.add_argument('location', choices=[
-        'rels', 'docProps', 'document', 'fontTable', 'settings', 'styles', 'theme', 'webSettings', 'docRels', 'contentTypes',
-        'workbook', 'sharedStrings', 'sheet1', 'workbookRels',
-        'presentation', 'slide1', 'slideLayouts', 'slideMasters', 'notesSlide', 'presentationRels'
-    ], nargs='?', default='document', help='Location within the document to inject the payload')
-    inject_hidden_prompt_parser.add_argument('payload', nargs='?', default='', help='Payload to be injected (text or file path)')
-    inject_hidden_prompt_parser.add_argument('--file', action='store_true', help='Indicate if the payload is a file path')
-
+    
     args = parser.parse_args()
 
-    if args.command == 'function':
-        func = globals()[args.function]
+    # Dictionary to map function names to their corresponding functions
+    function_map = {
+        'aes_encrypt': aes_encrypt,
+        'aes_decrypt': aes_decrypt,
+        'xor_encrypt': xor_encrypt,
+        'xor_decrypt': xor_decrypt,
+        'random_number': random_number,
+        'timestamp_convert': timestamp_convert,
+        'math_operations': math_operations,
+        'find_replace': find_replace,
+        'split': split,
+        'join': join,
+        'extract_regex': extract_regex,
+        'pad': pad,
+        'truncate': truncate,
+        'length': length,
+        'escape': escape,
+        'unescape': unescape,
+        'md5': md5,
+        'sha1': sha1,
+        'sha256': sha256,
+        'sha512': sha512,
+        'crc32': crc32,
+        'format_json': format_json,
+        'parse_json': parse_json,
+        'format_xml': format_xml,
+        'parse_xml': parse_xml,
+        'to_upper_case': to_upper_case,
+        'to_lower_case': to_lower_case,
+        'reverse_text': reverse_text
+    }
+
+    # Check if the selected function exists in the function map
+    if args.function in function_map:
+        func = function_map[args.function]
         if args.function in ['aes_encrypt', 'aes_decrypt']:
             result = func(args.text, args.password)
         elif args.function in ['xor_encrypt', 'xor_decrypt']:
             result = func(args.text, args.key)
-        elif args.function in ['random_number']:
+        elif args.function == 'random_number':
             result = func(args.start, args.end)
         elif args.function == 'timestamp_convert':
             result = func(args.text, args.mode)
@@ -527,7 +661,7 @@ def main():
             result = func(args.text, args.find, args.replace)
         elif args.function == 'extract_regex':
             result = func(args.text, args.pattern)
-        elif args.function in ['pad']:
+        elif args.function == 'pad':
             result = func(args.text, args.length, args.char)
         elif args.function in ['truncate', 'length']:
             result = func(args.text, args.length)
@@ -541,11 +675,6 @@ def main():
             result = reverse_text(args.text)
         else:
             result = func(args.text)
-
-        print(result)
-
-    elif args.command == 'inject_hidden_prompt':
-        inject_hidden_prompt_parser(args.doc_path, args.doc_type, args.location, args.payload, args.file)
-
+        
 if __name__ == "__main__":
     main()
