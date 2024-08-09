@@ -13,6 +13,7 @@ import datetime
 import uuid
 import random
 import json
+import tempfile
 import hashlib
 import binascii
 import gzip
@@ -33,7 +34,6 @@ except ImportError as e:
     print('Please install the missing libraries using pip:')
     print('pip3.9 install python-docx openpyxl python-pptx pycryptodome')
     sys.exit(1)
-
 
 def inject_hidden_prompt(doc_path, doc_type, location, text, file):
     # Determine the file paths based on document type and location
@@ -75,68 +75,63 @@ def inject_hidden_prompt(doc_path, doc_type, location, text, file):
         }
     }
 
-    if doc_type not in doc_path or location not in [doc_type]:
+    if doc_type not in doc_type or location not in file [doc_type]:
         print(f"Unsupported document type or location: {doc_type}, {location}")
         return
 
     target_file = doc_path[doc_type][location]
 
     # Read the payload
-    if not file:
-     open(file, 'r')
-     payload_content = text
+    if doc_type:
+        with open(file, 'r') as file:
+            payload_content = file.read()
     else:
-        payload_content = file.read()
-   
-    
+        payload_content = text
 
-    # Unzip the document
-    unzip_dir = 'unzipped_doc'
-    if os.path.exists(unzip_dir):
-        shutil.rmtree(unzip_dir)
-    os.makedirs(unzip_dir)
+    # Use a temporary directory for unzipping the document
+    with tempfile.TemporaryDirectory() as unzip_dir:
+        with zipfile.ZipFile(doc_path, 'r') as zip_ref:
+            zip_ref.extractall(unzip_dir)
 
-    with zipfile.ZipFile(doc_path, 'r') as zip_ref:
-        zip_ref.extractall(unzip_dir)
+        # Inject the hidden prompt
+        content_path = os.path.join(unzip_dir, target_file)
+        if not os.path.exists(content_path):
+            print(f"Target file {content_path} not found in the document.")
+            return
 
-    # Inject the hidden prompt
-    content_path = os.path.join(unzip_dir, target_file)
-    if not os.path.exists(content_path):
-        print(f"Target file {content_path} not found in the document.")
-        return
+        with open(content_path, 'r', encoding='utf-8') as file:
+            content = file.read()
 
-    with open(content_path, 'r', encoding='utf-8') as file:
-        content = file.read()
-    
-    # Determine the injection point and create the payload XML
-    if location == 'rels':
-        injection_point = '</Relationships>'
-        payload_xml = f'<Relationship Id="rIdHidden" Type="http://schemas.microsoft.com/office/2006/relationships/customXml" Target="{payload_content}"/>'
-    elif location == 'docProps':
-        injection_point = '</cp:coreProperties>'
-        payload_xml = f'<property name="hiddenPrompt" fmtid="{{D5CDD505-2E9C-101B-9397-08002B2CF9AE}}" pid="2"><vt:lpwstr>{payload_content}</vt:lpwstr></property>'
-    elif location in ['document', 'workbook', 'presentation']:
-        injection_point = '</w:document>' if location == 'document' else '</workbook>' if location == 'workbook' else '</p:presentation>'
-        payload_xml = f'<customXml><hiddenPrompt>{payload_content}</hiddenPrompt></customXml>'
-    else:
-        print(f"Location {location} is not supported for payload injection.")
-        return
+        # Determine the injection point and create the payload XML
+        if location == 'rels':
+            injection_point = '</Relationships>'
+            payload_xml = f'<Relationship Id="rIdHidden" Type="http://schemas.microsoft.com/office/2006/relationships/customXml" Target="{payload_content}"/>'
+        elif location == 'docProps':
+            injection_point = '</cp:coreProperties>'
+            payload_xml = f'<property name="hiddenPrompt" fmtid="{{D5CDD505-2E9C-101B-9397-08002B2CF9AE}}" pid="2"><vt:lpwstr>{payload_content}</vt:lpwstr></property>'
+        elif location in ['document', 'workbook', 'presentation']:
+            injection_point = '</w:document>' if location == 'document' else '</workbook>' if location == 'workbook' else '</p:presentation>'
+            payload_xml = f'<customXml><hiddenPrompt>{payload_content}</hiddenPrompt></customXml>'
+        else:
+            print(f"Location {location} is not supported for payload injection.")
+            return
 
-    content = content.replace(injection_point, f'{payload_xml}{injection_point}')
-    
-    # Write the updated content back
-    with open(content_path, 'w', encoding='utf-8') as file:
-        file.write(content)
-    
-    # Zip the document back up
-    modified_doc_path = f'modified_{os.path.basename(doc_path)}'
-    with zipfile.ZipFile(modified_doc_path, 'w', zipfile.ZIP_DEFLATED) as zip_ref:
-        for folder_name, subfolders, filenames in os.walk(unzip_dir):
-            for filename in filenames:
-                file_path = os.path.join(folder_name, filename)
-                zip_ref.write(file_path, os.path.relpath(file_path, unzip_dir))
-    
+        content = content.replace(injection_point, f'{payload_xml}{injection_point}')
+
+        # Write the updated content back
+        with open(content_path, 'w', encoding='utf-8') as file:
+            file.write(content)
+
+        # Zip the document back up
+        modified_doc_path = f'modified_{os.path.basename(doc_path)}'
+        with zipfile.ZipFile(modified_doc_path, 'w', zipfile.ZIP_DEFLATED) as zip_ref:
+            for folder_name, subfolders, filenames in os.walk(unzip_dir):
+                for filename in filenames:
+                    file_path = os.path.join(folder_name, filename)
+                    zip_ref.write(file_path, os.path.relpath(file_path, unzip_dir))
+
     print(f"Modified document saved as: {modified_doc_path}")
+
 # Encryption/Encoding Functions
 def aes_encrypt(text, password):
     salt = get_random_bytes(16)
@@ -609,10 +604,8 @@ def main():
     function_parser.add_argument('--length', '-l', type=int, help='Length for truncate/pad functions')
     function_parser.add_argument('--char', '-c', type=str, help='Padding character')
     function_parser.add_argument('--pattern', type=str, help='Regex pattern for extract_regex function')
-    
-    args = parser.parse_args()
-
     # Dictionary to map function names to their corresponding functions
+    
     function_map = {
         'aes_encrypt': aes_encrypt,
         'aes_decrypt': aes_decrypt,
